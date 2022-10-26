@@ -43,5 +43,5 @@ class BaseModule(ABC):
             [f"'{insert_value}'" for insert_value in insert_values.values()]
         )
         query = f"INSERT INTO {self.__table__} ({insert_dimensions}) values ({_insert_values});"
-        print(queryf"INSERT INTO {self.__table__} ({insert_dimensions}) values ({_insert_values});")
+        cur.execute(query)
         self._db_connection.commit()
