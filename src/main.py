@@ -2,10 +2,13 @@ from typing import List
 
 from fastapi import FastAPI, HTTPException
 
-from base_models.puppy import Puppy as PuppyModel
-from modules.puppy import Puppy
+from src.db.connection import db_connection
+from src.models.puppy import Puppy as PuppyModel
+from src.modules.puppy import Puppy
 
 app = FastAPI()
+
+puppy_module = Puppy(db_connection)
 
 puppies: List[Puppy] = []
 

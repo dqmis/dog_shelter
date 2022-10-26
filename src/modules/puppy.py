@@ -1,20 +1,17 @@
-import uuid
-from typing import Dict, Optional
+from mysql.connector.connection_cext import CMySQLConnection
+
+from src.modules.base import BaseModule
 
 
-class Puppy:
-    def __init__(self, breed: str, name: str, age: int) -> None:
-        self._breed = breed
-        self._name = name
-        self._age = age
-        self._secret_id = uuid.uuid4().hex
+class Puppy(BaseModule):
+    def __init__(self, db_connection: CMySQLConnection) -> None:
+        super().__init__(db_connection)
 
-    def serialize(self) -> Dict:
-        return {"breed": self._breed, "name": self._name, "age": self._age}
-
-    def update(self, name: str, age: int, breed: Optional[str] = None) -> bool:
-        if name:
-            self._name = name
-        if age:
-            self._age = age
-        return True
+    def _initialization_query(self) -> str:
+        query = """CREATE TABLE IF NOT EXISTS puppies (
+            id int NOT NULL AUTO_INCREMENT,
+            name varchar(255) NOT NULL,
+            breed varchar(255) NOT NULL,
+            PRIMARY KEY(id)
+        );"""
+        return query
