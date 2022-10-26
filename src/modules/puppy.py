@@ -1,9 +1,13 @@
+from typing import Dict
+
 from mysql.connector.connection_cext import CMySQLConnection
 
 from src.modules.base import BaseModule
 
 
 class Puppy(BaseModule):
+    __table__: str = "puppies"
+
     def __init__(self, db_connection: CMySQLConnection) -> None:
         super().__init__(db_connection)
 

@@ -1,3 +1,4 @@
+import json
 from typing import List
 
 from fastapi import FastAPI, HTTPException
@@ -10,31 +11,29 @@ app = FastAPI()
 
 puppy_module = Puppy(db_connection)
 
-puppies: List[Puppy] = []
-
-
 @app.get("/")
 def hello():
-    return {"message": "Hello, World!"}
+    puppies = puppy_module.get_all()
+    print(puppies)
+    return json.dumps(puppies)
 
 
 @app.post("/puppy")
 async def create_puppy(puppy: PuppyModel):
-    puppies.append(Puppy(**puppy.dict()))
-    return [p.serialize() for p in puppies]
+    puppy_module.insert(puppy.dict())
+    return True
 
 
 @app.get("/puppy")
 def get_puppies():
-    return [p.serialize() for p in puppies]
+    puppies = puppy_module.get_all()
+    return json.dumps(puppies)
 
 
 @app.get("/puppy/{id}")
 def get_puppy(id: int):
-    try:
-        return puppies[id].serialize()
-    except IndexError:
-        raise HTTPException(status_code=404, detail="Puppy not found :(")
+    puppy = puppy_module.get_by_id(id)
+    return json.dumps(puppy[0])
 
 
 @app.put("/puppy/{id}")
