@@ -3,6 +3,12 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class Puppy(BaseModel):
+class PuppySetter(BaseModel):
+    name: str
+    breed: str
+
+
+class PuppyGetter(BaseModel):
+    id: int
     name: str
     breed: str

@@ -4,7 +4,7 @@ from typing import List
 from fastapi import FastAPI, HTTPException
 
 from src.db.connection import db_connection
-from src.models.puppy import Puppy as PuppyModel
+from src.models.puppy import PuppyGetter, PuppySetter
 from src.modules.puppy import Puppy
 
 app = FastAPI()
@@ -19,7 +19,7 @@ def hello():
 
 
 @app.post("/puppy")
-async def create_puppy(puppy: PuppyModel):
+async def create_puppy(puppy: PuppySetter):
     puppy_module.insert(puppy.dict())
     return True
 
@@ -27,7 +27,11 @@ async def create_puppy(puppy: PuppyModel):
 @app.get("/puppy")
 def get_puppies():
     puppies = puppy_module.get_all()
-    return json.dumps(puppies)
+    res = []
+    for puppy_values in puppies:
+        res.append({"id": puppy_values[0], "name": puppy_values[1], "breed": puppy_values[2]})
+
+    return res
 
 
 @app.get("/puppy/{id}")
@@ -37,7 +41,7 @@ def get_puppy(id: int):
 
 
 @app.put("/puppy/{id}")
-def get_puppy(id: int, puppy: PuppyModel):
+def get_puppy(id: int, puppy: PuppySetter):
     if id >= len(puppies):
         raise HTTPException(status_code=404, detail="Puppy not found :(")
     our_puppy = puppies[id]
